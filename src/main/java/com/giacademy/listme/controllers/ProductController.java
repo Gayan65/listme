@@ -5,10 +5,9 @@ import com.giacademy.listme.entities.Product;
 import com.giacademy.listme.mappers.ProductMapper;
 import com.giacademy.listme.repositories.ProductRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 
@@ -32,5 +31,15 @@ public class ProductController {
     }
        return products.stream().map(productMapper::toDto).toList();
 
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDto> getProduct(@PathVariable Long id) {
+
+    var product = productRepository.findById(id).orElse(null);
+
+    if(product == null)
+        return ResponseEntity.notFound().build();
+
+    return ResponseEntity.ok(productMapper.toDto(product));
     }
 }
